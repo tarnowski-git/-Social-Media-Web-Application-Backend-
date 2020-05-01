@@ -40,10 +40,34 @@ public class PostService {
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
-    @GetMapping("/posts")
-    public ResponseEntity getPosts() throws JsonProcessingException {
+    @GetMapping("/posts/all")
+    public ResponseEntity<List<Post>> getPosts() throws JsonProcessingException {
 
         List<Post> posts = postRepository.findAll();
-        return ResponseEntity.ok(objectMapper.writeValueAsString(posts));
+        return new ResponseEntity<List<Post>>(posts, HttpStatus.OK);
+    }
+
+    @CrossOrigin(origins = "http://localhost:3000")
+    @PutMapping("/posts")
+    public ResponseEntity<Post> updatePost(@RequestParam Long id, @RequestBody String postBody) {
+        Optional<Post> postFromDB = postRepository.findById(id);
+        if (postFromDB.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        Post updatedPost = postFromDB.get();
+        updatedPost.setBody(postBody);
+        postRepository.save(updatedPost);
+        return new ResponseEntity<Post>(updatedPost, HttpStatus.OK);
+    }
+
+    @CrossOrigin(origins = "http://localhost:3000")
+    @DeleteMapping("/posts")
+    public ResponseEntity<Void> deletePost(@RequestParam Long id) {
+        Optional<Post> postFromDB = postRepository.findById(id);
+        if (postFromDB.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        postRepository.delete(postFromDB.get());
+        return new ResponseEntity<Void>(HttpStatus.OK);
     }
 }
