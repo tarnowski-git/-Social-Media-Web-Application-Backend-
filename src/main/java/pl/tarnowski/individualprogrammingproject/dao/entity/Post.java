@@ -1,9 +1,11 @@
 package pl.tarnowski.individualprogrammingproject.dao.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.sql.Timestamp;
 
 @Entity
 @Table(name = "posts")
@@ -21,9 +23,17 @@ public class Post {
     @NotNull
     private String body;
 
-    public Post(User user, String postBody) {
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", shape = JsonFormat.Shape.STRING, timezone = "Europe/Warsaw")
+    private Timestamp createdAt;
+
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", shape = JsonFormat.Shape.STRING, timezone = "Europe/Warsaw")
+    private Timestamp updatedAt;
+
+    public Post(User user, String postBody, Timestamp createdAt, Timestamp updatedAt) {
         this.user = user;
         this.body = postBody;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
     public long getId() {
@@ -50,12 +60,30 @@ public class Post {
         this.body = body;
     }
 
+    public Timestamp getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Timestamp createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Timestamp getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Timestamp updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
     @Override
     public String toString() {
         return "Post{" +
                 "id=" + id +
                 ", user=" + user +
                 ", body='" + body + '\'' +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
                 '}';
     }
 }

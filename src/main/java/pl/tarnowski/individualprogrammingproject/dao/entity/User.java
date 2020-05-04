@@ -23,4 +23,8 @@ public class User {
 
     @NotNull
     private String password;
+
+    private String first;
+
+    private String last;
 }

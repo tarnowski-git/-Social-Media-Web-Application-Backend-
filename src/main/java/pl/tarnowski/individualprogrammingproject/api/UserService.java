@@ -30,10 +30,11 @@ public class UserService {
 
     @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/users")
-    public ResponseEntity addUser(@RequestBody User user) {
+    public ResponseEntity<User> addUser(@RequestBody User user) {
+        //  using for registration
         Optional<User> userFromDb = userRepository.findByUsername(user.getUsername());
 
-        if (!userFromDb.isEmpty()) {
+        if (userFromDb.isPresent()) {
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
         }
 
@@ -42,8 +43,22 @@ public class UserService {
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
+    @PutMapping("/users")
+    public ResponseEntity<User> updateUser(@RequestBody User user) {
+        // using for updating user data
+        Optional<User> userFromDb = userRepository.findById(user.getId());
+
+        if (userFromDb.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
+        }
+        //
+        User updatedUser = userRepository.save(user);
+        return ResponseEntity.ok(updatedUser);
+    }
+
+    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody User user) {
+    public ResponseEntity<Void> login(@RequestBody User user) {
         Optional<User> userFromDb = userRepository.findByUsername(user.getUsername());
 
         if (userFromDb.isEmpty() || wrongPassword(userFromDb, user)) {
@@ -53,9 +68,8 @@ public class UserService {
         return ResponseEntity.ok().build();
     }
 
-//    very simple way to authentical the user
+//    very simple way to authentication the user
     private boolean wrongPassword(Optional<User> userFromDb, User user) {
         return !userFromDb.get().getPassword().equals(user.getPassword());
     }
-
 }

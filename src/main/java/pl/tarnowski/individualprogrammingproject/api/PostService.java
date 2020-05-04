@@ -11,8 +11,9 @@ import pl.tarnowski.individualprogrammingproject.dao.UserRepository;
 import pl.tarnowski.individualprogrammingproject.dao.entity.Post;
 import pl.tarnowski.individualprogrammingproject.dao.entity.User;
 
-import java.util.List;
-import java.util.Optional;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @RestController
 public class PostService {
@@ -27,22 +28,19 @@ public class PostService {
 
     @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/posts")
-    public ResponseEntity addPost(@RequestHeader("username") String username, @RequestBody String postBody) {
+    public ResponseEntity<Post> addPost(@RequestHeader("username") String username, @RequestBody String postBody) {
         Optional<User> userFromDb = userRepository.findByUsername(username);
-
         if (userFromDb.isEmpty()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        Post post = new Post(userFromDb.get(), postBody);
+        Post post = new Post(userFromDb.get(), postBody, getCurrentTimestamp(), getCurrentTimestamp());
         Post savedPost = postRepository.save(post);
-
         return ResponseEntity.ok(savedPost);
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/posts/all")
     public ResponseEntity<List<Post>> getPosts() throws JsonProcessingException {
-
         List<Post> posts = postRepository.findAll();
         return new ResponseEntity<List<Post>>(posts, HttpStatus.OK);
     }
@@ -56,6 +54,7 @@ public class PostService {
         }
         Post updatedPost = postFromDB.get();
         updatedPost.setBody(postBody);
+        updatedPost.setUpdatedAt(getCurrentTimestamp());
         postRepository.save(updatedPost);
         return new ResponseEntity<Post>(updatedPost, HttpStatus.OK);
     }
@@ -69,5 +68,14 @@ public class PostService {
         }
         postRepository.delete(postFromDB.get());
         return new ResponseEntity<Void>(HttpStatus.OK);
+    }
+
+    /**
+     *  Private method returning a Timestamp object for MySQL database.
+     */
+    private Timestamp getCurrentTimestamp() {
+        TimeZone timeZone = TimeZone.getTimeZone("Europe/Warsaw");
+        Calendar calendar = Calendar.getInstance(timeZone, Locale.getDefault());
+        return new Timestamp(calendar.getTimeInMillis());
     }
 }
