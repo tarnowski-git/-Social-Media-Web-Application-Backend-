@@ -27,4 +27,6 @@ public class User {
     private String first;
 
     private String last;
+
+    private String imageUrl;
 }
