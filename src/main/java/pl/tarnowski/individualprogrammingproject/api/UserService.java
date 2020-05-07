@@ -54,8 +54,8 @@ public class UserService {
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
-    @PutMapping("/users")
-    public ResponseEntity<User> updateUser(@RequestParam String username, @RequestBody User user) {
+    @PutMapping("/users/{username}")
+    public ResponseEntity<User> updateUser(@PathVariable String username, @RequestBody User user) {
         // using for updating first and last names
         Optional<User> userFromDb = userRepository.findByUsername(username);
 
@@ -65,9 +65,17 @@ public class UserService {
         if (user.getFirst().equals("") || user.getLast().equals("")) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
+
         User newUser = userFromDb.get();
         newUser.setFirst(user.getFirst());
         newUser.setLast(user.getLast());
+
+        if (!(newUser.getImageUrl().equals(user.getImageUrl()))) {
+            newUser.setImageUrl(user.getImageUrl());
+        }
+        if (newUser.getImageUrl().equals("")) {
+            newUser.setImageUrl(defaultImage);
+        }
 
         User updatedUser = userRepository.save(newUser);
         return ResponseEntity.ok(updatedUser);
