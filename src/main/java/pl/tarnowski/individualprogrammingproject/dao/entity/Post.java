@@ -1,7 +1,6 @@
 package pl.tarnowski.individualprogrammingproject.dao.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -15,8 +14,8 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
     @NotNull
+    @ManyToOne(cascade = CascadeType.ALL)
     private User user;
 
     @NotNull

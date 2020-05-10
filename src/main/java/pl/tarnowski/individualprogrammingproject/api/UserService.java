@@ -1,7 +1,6 @@
 package pl.tarnowski.individualprogrammingproject.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,9 +23,6 @@ public class UserService {
 
     @Autowired
     UserRepository userRepository;
-
-    @Autowired
-    ObjectMapper objectMapper;
 
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/users/all")
