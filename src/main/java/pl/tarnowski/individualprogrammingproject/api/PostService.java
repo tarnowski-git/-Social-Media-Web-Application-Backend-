@@ -22,9 +22,17 @@ public class PostService {
     @Autowired
     UserRepository userRepository;
 
+
+    @CrossOrigin(origins = "http://localhost:3000")
+    @GetMapping("/posts/all")
+    public ResponseEntity<List<Post>> getAllPosts() throws JsonProcessingException {
+        List<Post> posts = postRepository.findAll();
+        return new ResponseEntity<List<Post>>(posts, HttpStatus.OK);
+    }
+
     @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/posts")
-    public ResponseEntity<Post> addPost(@RequestHeader("username") String username, @RequestBody String postBody) {
+    public ResponseEntity<Post> createPost(@RequestHeader("username") String username, @RequestBody String postBody) {
         Optional<User> userFromDb = userRepository.findByUsername(username);
         if (userFromDb.isEmpty()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -35,23 +43,16 @@ public class PostService {
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
-    @GetMapping("/posts/all")
-    public ResponseEntity<List<Post>> getPosts() throws JsonProcessingException {
-        List<Post> posts = postRepository.findAll();
-        return new ResponseEntity<List<Post>>(posts, HttpStatus.OK);
-    }
-
-    @CrossOrigin(origins = "http://localhost:3000")
     @PutMapping("/posts")
     public ResponseEntity<Post> updatePost(@RequestParam Long id, @RequestBody String postBody) {
         Optional<Post> postFromDB = postRepository.findById(id);
         if (postFromDB.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
-        Post updatedPost = postFromDB.get();
-        updatedPost.setBody(postBody);
-        updatedPost.setUpdatedAt(getCurrentTimestamp());
-        postRepository.save(updatedPost);
+        Post post = postFromDB.get();
+        post.setBody(postBody);
+        post.setUpdatedAt(getCurrentTimestamp());
+        Post updatedPost = postRepository.save(post);
         return new ResponseEntity<Post>(updatedPost, HttpStatus.OK);
     }
 

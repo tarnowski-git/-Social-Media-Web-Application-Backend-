@@ -44,6 +44,4 @@ public class UserDetailsService {
 
         return  ResponseEntity.ok(userDetailsFromDb.get());
     }
-
-
 }

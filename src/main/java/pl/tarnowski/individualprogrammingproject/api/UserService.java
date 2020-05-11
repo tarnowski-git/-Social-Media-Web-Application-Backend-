@@ -26,7 +26,7 @@ public class UserService {
 
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/users/all")
-    public ResponseEntity<List<User>> getUsers() throws JsonProcessingException {
+    public ResponseEntity<List<User>> getAllUsers() throws JsonProcessingException {
         List<User> users = userRepository.findAll();
         return new ResponseEntity<List<User>>(users, HttpStatus.OK);
     }
