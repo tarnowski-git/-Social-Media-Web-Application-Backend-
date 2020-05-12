@@ -27,7 +27,7 @@ public class CommentService {
     @Autowired
     private UserRepository userRepository;
 
-
+    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/comments/all")
     public ResponseEntity<List<Comment>> getAllComments() {
         List<Comment> comments = commentRepository.findAll();
@@ -35,6 +35,7 @@ public class CommentService {
         return new ResponseEntity<>(comments, HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/posts/{postId}/comments")
     public ResponseEntity<List<Comment>> getCommentsByPostId(@PathVariable(value = "postId") Long postId) {
         List<Comment> commentsFromDb = commentRepository.findAllByPostId(postId);
@@ -44,6 +45,7 @@ public class CommentService {
         return new ResponseEntity<>(commentsFromDb, HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/posts/{postId}/comments")
     public ResponseEntity<Comment> createComment(@PathVariable(value = "postId") Long postId, @Valid @RequestBody Comment comment) {
         Optional<Post> postFromDb = postRepository.findById(postId);
@@ -63,6 +65,7 @@ public class CommentService {
         return ResponseEntity.ok(savedComment);
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @PutMapping("/posts/{postId}/comments/{commentId}")
     public ResponseEntity<Comment> updateComment(@PathVariable(value = "postId") Long postId, @PathVariable(value = "commentId") Long commentId, @Valid @RequestBody Comment commentRequest ) {
         if (!postRepository.existsById(postId)) {
@@ -82,6 +85,7 @@ public class CommentService {
         return new ResponseEntity<Comment>(updatedComment, HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @DeleteMapping("/posts/{postId}/comments/{commentId}")
     public ResponseEntity<Void> deleteComment(@PathVariable(value = "postId") Long postId, @PathVariable(value = "commentId") Long commentId) {
         Optional<Comment> commentFromDb = commentRepository.findByIdAndPostId(commentId, postId);

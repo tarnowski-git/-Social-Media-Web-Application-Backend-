@@ -26,8 +26,8 @@ public class PostService {
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/posts/all")
     public ResponseEntity<List<Post>> getAllPosts() throws JsonProcessingException {
-        List<Post> posts = postRepository.findAll();
-        return new ResponseEntity<List<Post>>(posts, HttpStatus.OK);
+        List<Post> postsFromDb = postRepository.findAll();
+        return new ResponseEntity<List<Post>>(postsFromDb, HttpStatus.OK);
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
