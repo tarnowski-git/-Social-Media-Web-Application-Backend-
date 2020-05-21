@@ -53,7 +53,7 @@ public class CommentService {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
 
-        Optional<User> userFromDb = userRepository.findById(comment.getUser().getId());
+        Optional<User> userFromDb = userRepository.findByUsername(comment.getUser().getUsername());
         if (userFromDb.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
